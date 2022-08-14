@@ -158,3 +158,29 @@ function getLocalStorageCity() {
     return city.value;
 }
 window.addEventListener('load', getLocalStorageCity)
+
+                        // 5. Цитата дня //
+const quote = document.querySelector('.quote')
+const author = document.querySelector('.author')
+const changeQuote = document.querySelector('.change-quote')
+
+changeQuote.addEventListener('click', getQuotes)
+
+function getRandomNumForQuote(min,max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min +1)) + min
+}
+
+
+async function getQuotes() {
+    const quotes = 'data.json';
+    const res = await fetch(quotes);
+    const data = await res.json();
+    let randNum = getRandomNumForQuote(0,6);
+    
+    quote.textContent = data[randNum].text;
+    author.textContent = data[randNum].author;
+    console.log(data);
+}
+getQuotes()
