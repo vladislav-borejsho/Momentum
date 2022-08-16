@@ -172,15 +172,86 @@ function getRandomNumForQuote(min,max) {
     return Math.floor(Math.random() * (max - min +1)) + min
 }
 
-
 async function getQuotes() {
     const quotes = 'data.json';
     const res = await fetch(quotes);
     const data = await res.json();
     let randNum = getRandomNumForQuote(0,6);
-    
+
     quote.textContent = data[randNum].text;
     author.textContent = data[randNum].author;
-    console.log(data);
 }
 getQuotes()
+
+                        // 6. Аудиоплеер //
+import playList from './playList.js';
+const playBtn = document.querySelector('.play')
+const playNextBtn = document.querySelector('.play-next')
+const playPrevBtn = document.querySelector('.play-prev')
+const playListContainer = document.querySelector('.play-list')
+const audio = new Audio();
+    let isPlay = false;
+    let playNum = 0;
+
+function playAudio() {
+    audio.src = playList[playNum].src;
+    audio.currentTime = 0;
+    playNow();
+        if(!isPlay) {
+        audio.play(); 
+        isPlay = true;
+        playBtn.classList.toggle('pause');
+    } else {
+        audio.pause(); 
+        isPlay = false;
+        playBtn.classList.toggle('pause');
+    }
+}
+
+function playNext() {
+    if (playNum < 3) {playNum += 1;} else {playNum = 0}
+    playAudio();
+    if(!isPlay) {
+        audio.play(); 
+        isPlay = true;
+        playBtn.classList.toggle('pause');
+    } else {
+        audio.pause(); 
+        isPlay = false;
+        playBtn.classList.toggle('pause');
+    }
+}
+function playPrev() {
+    if (playNum > 0) {playNum -= 1;} else {playNum = 3}
+    playAudio();
+    if(!isPlay) {
+        audio.play(); 
+        isPlay = true;
+        playBtn.classList.add('pause');
+    } else {
+        audio.pause(); 
+        isPlay = false;
+        playBtn.classList.remove('pause');
+    }
+}
+
+    for (let i=0; i < playList.length; i++) {
+        const li = document.createElement('li')
+        li.textContent = playList[i].title;
+        li.classList.add('play-item');
+        playListContainer.append(li);
+    }   
+
+    function playNow() {
+        const playListSong = document.querySelector('.play-list');
+        let playTrackNow = playListSong.children;
+        for (let i=0; i <= 3; i++) {
+            playTrackNow[i].classList.remove('item-active');
+            } 
+            playTrackNow[playNum].classList.add('item-active');
+        }     
+    
+    
+playBtn.addEventListener('click', playAudio)
+playNextBtn.addEventListener('click', playNext)
+playPrevBtn.addEventListener('click', playPrev)
